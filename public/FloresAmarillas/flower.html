@@ -330,7 +330,7 @@
     
     <button id="audioToggle" style="
       position: fixed;
-      bottom: 30px;
+      bottom: 60px;
       right: 20px;
       width: 50px;
       height: 50px;
@@ -345,52 +345,145 @@
       transition: transform 0.2s, box-shadow 0.2s;
     ">🔇</button>
 
+    <button id="homeBtn" style="
+      position: fixed;
+      bottom: 60px;
+      right: 150px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(232,115,154,0.9), rgba(212,91,138,0.9));
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(232, 115, 154, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    ">🏠</button>
+
+    <button id="clearCache" style="
+      position: fixed;
+      bottom: 60px;
+      right: 85px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(232,115,154,0.9), rgba(212,91,138,0.9));
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(232, 115, 154, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">🗑️</button>
+
     <audio id="bgAudio" style="display: none;">
       <source src="../Idilio.mp3" type="audio/mpeg">
     </audio>
     
     <script>
-      const audio = document.getElementById('bgAudio');
-      const toggleBtn = document.getElementById('audioToggle');
-      let isPlaying = false;
-      
-      // Restaurar tiempo guardado para flores
-      const savedTime = localStorage.getItem('audioTimeFlores');
-      if (savedTime) {
-        audio.currentTime = parseFloat(savedTime);
-      }
-      
-      // Intentar autoplay
-      audio.play().then(() => {
-        toggleBtn.textContent = '🔊';
-        isPlaying = true;
-      }).catch(() => {
-        toggleBtn.textContent = '🔇';
-        isPlaying = false;
-      });
-      
-      // Toggle audio
-      toggleBtn.addEventListener('click', () => {
-        if (audio.paused) {
-          audio.play().then(() => {
-            toggleBtn.textContent = '🔊';
-            isPlaying = true;
-          });
-        } else {
-          audio.pause();
+      // Esperar a que el DOM esté cargado
+      document.addEventListener('DOMContentLoaded', function() {
+        const audio = document.getElementById('bgAudio');
+        const toggleBtn = document.getElementById('audioToggle');
+        const clearBtn = document.getElementById('clearCache');
+        let isPlaying = false;
+        
+        // Restaurar tiempo guardado para flores
+        const savedTime = localStorage.getItem('audioTimeFlores');
+        if (savedTime) {
+          audio.currentTime = parseFloat(savedTime);
+        }
+        
+        // Intentar autoplay
+        audio.play().then(() => {
+          toggleBtn.textContent = '🔊';
+          isPlaying = true;
+        }).catch(() => {
           toggleBtn.textContent = '🔇';
           isPlaying = false;
-        }
-      });
-      
-      // Guardar tiempo de flores separado
-      setInterval(() => {
-        localStorage.setItem('audioTimeFlores', audio.currentTime.toString());
-      }, 1000);
-      
-      // Guardar antes de desnavegar
-      window.addEventListener('beforeunload', () => {
-        localStorage.setItem('audioTimeFlores', audio.currentTime.toString());
+        });
+        
+        // Toggle audio
+        toggleBtn.addEventListener('click', () => {
+          if (audio.paused) {
+            audio.play().then(() => {
+              toggleBtn.textContent = '🔊';
+              isPlaying = true;
+            });
+          } else {
+            audio.pause();
+            toggleBtn.textContent = '🔇';
+            isPlaying = false;
+          }
+        });
+
+        // Limpiar caché - Función directa
+        clearBtn.onclick = function() {
+          audio.pause();
+          audio.currentTime = 0;
+          localStorage.clear();
+          sessionStorage.clear();
+          console.log('Cache limpiado');
+          alert('✅ Caché limpiado. La música comenzará desde 0.');
+          setTimeout(() => {
+            location.reload(true);
+          }, 200);
+        };
+
+        // También agregar evento click
+        clearBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          audio.pause();
+          audio.currentTime = 0;
+          localStorage.clear();
+          sessionStorage.clear();
+          console.log('Cache limpiado (event listener)');
+          alert('✅ Caché limpiado. La música comenzará desde 0.');
+          setTimeout(() => {
+            location.reload(true);
+          }, 200);
+        });
+
+        // Agregar efectos hover al botón de limpiar
+        clearBtn.addEventListener('mouseenter', () => {
+          clearBtn.style.transform = 'scale(1.1)';
+          clearBtn.style.boxShadow = '0 6px 16px rgba(232, 115, 154, 0.6)';
+        });
+        clearBtn.addEventListener('mouseleave', () => {
+          clearBtn.style.transform = 'scale(1)';
+          clearBtn.style.boxShadow = '0 4px 12px rgba(232, 115, 154, 0.4)';
+        });
+
+        // Botón de inicio - ir al home
+        const homeBtn = document.getElementById('homeBtn');
+        homeBtn.addEventListener('click', () => {
+          window.location.href = '/';
+        });
+        homeBtn.addEventListener('mouseenter', () => {
+          homeBtn.style.transform = 'scale(1.1)';
+          homeBtn.style.boxShadow = '0 6px 16px rgba(232, 115, 154, 0.6)';
+        });
+        homeBtn.addEventListener('mouseleave', () => {
+          homeBtn.style.transform = 'scale(1)';
+          homeBtn.style.boxShadow = '0 4px 12px rgba(232, 115, 154, 0.4)';
+        });
+        
+        // Guardar tiempo de flores separado
+        setInterval(() => {
+          localStorage.setItem('audioTimeFlores', audio.currentTime.toString());
+        }, 1000);
+        
+        // Guardar antes de desnavegar
+        window.addEventListener('beforeunload', () => {
+          localStorage.setItem('audioTimeFlores', audio.currentTime.toString());
+        });
       });
     </script>
   </body>

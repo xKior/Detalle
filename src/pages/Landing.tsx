@@ -87,7 +87,7 @@ const Landing = () => {
 
         .audio-toggle {
           position: fixed;
-          bottom: 20px;
+          bottom: 60px;
           right: 20px;
           width: 50px;
           height: 50px;
@@ -230,6 +230,44 @@ const Landing = () => {
         title={isPlaying ? "Pausar música" : "Reproducir música"}
       >
         {isPlaying ? '🔊' : '🔇'}
+      </button>
+
+      <button 
+        style={{
+          position: 'fixed',
+          bottom: '60px',
+          right: '85px',
+          width: '50px',
+          height: '50px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(232,115,154,0.9), rgba(212,91,138,0.9))',
+          border: 'none',
+          color: 'white',
+          fontSize: '24px',
+          cursor: 'pointer',
+          zIndex: 999,
+          transition: 'transform 0.2s, box-shadow 0.2s',
+          boxShadow: '0 4px 12px rgba(232, 115, 154, 0.4)',
+          display: scene === 1 ? 'flex' : 'none',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        onClick={() => {
+          localStorage.clear();
+          alert('✅ Caché limpiado. La música comenzará desde 0.');
+          window.location.reload();
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.1)';
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(232, 115, 154, 0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(232, 115, 154, 0.4)';
+        }}
+        title="Limpiar caché de música"
+      >
+        🗑️
       </button>
 
       <div id="emoji-rain" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1 }} />
